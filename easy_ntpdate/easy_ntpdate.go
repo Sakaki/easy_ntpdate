@@ -1,4 +1,4 @@
-package main
+package easy_ntpdate
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-func main() {
+func SetDate() {
 	r := regexp.MustCompile("<BODY>\n(.*)\\.")
 	for {
 		resp, err := http.Get("http://ntp-a1.nict.go.jp/cgi-bin/jst")
@@ -19,10 +19,10 @@ func main() {
 		} else {
 			byteArray, _ := ioutil.ReadAll(resp.Body)
 			group := r.FindSubmatch(byteArray)
-			epoc_time := string(group[1])
-			fmt.Println(epoc_time)
+			epochTime := string(group[1])
+			fmt.Println(epochTime)
 			resp.Body.Close()
-			err := exec.Command("sh", "-c", fmt.Sprintf("date  --set @%s", epoc_time)).Run()
+			err := exec.Command("sh", "-c", fmt.Sprintf("date  --set @%s", epochTime)).Run()
 			if err != nil {
 				fmt.Println(err)
 			}
